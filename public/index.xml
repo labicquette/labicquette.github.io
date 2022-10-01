@@ -1,10 +1,97 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Theo Charlot&#39;s Website</title>
+    <title>Theo Charlot</title>
+    
+    
+    
     <link>https://labicquette.github.io/</link>
-    <description>Recent content on Theo Charlot&#39;s Website</description>
+    <description>Recent content on Theo Charlot</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://labicquette.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Sat, 01 Oct 2022 10:29:21 +0200</lastBuildDate>
+    
+	<atom:link href="https://labicquette.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Projects</title>
+      <link>https://labicquette.github.io/projects/</link>
+      <pubDate>Sat, 01 Oct 2022 14:48:05 +0200</pubDate>
+      
+      <guid>https://labicquette.github.io/projects/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          those are some projects
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>About | Théo Charlot</title>
+      <link>https://labicquette.github.io/about/</link>
+      <pubDate>Sat, 01 Oct 2022 10:49:58 +0200</pubDate>
+      
+      <guid>https://labicquette.github.io/about/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://labicquette.github.io/img/rythmeplat250.jpeg&#34;/&gt;
+          
+        
+        
+        
+          this is some information about me
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>CEM-ERL</title>
+      <link>https://labicquette.github.io/post/firstpost/</link>
+      <pubDate>Sat, 01 Oct 2022 10:29:21 +0200</pubDate>
+      
+      <guid>https://labicquette.github.io/post/firstpost/</guid>
+      <description>
+        
+          &lt;img src=&#34;https://labicquette.github.io/img/archi_CEMERL.svg&#34;/&gt;
+          
+        
+        
+        
+          first post # this is the first postsasdafdsafsdfadfs asdf
+fasdf asf
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Firstpage</title>
+      <link>https://labicquette.github.io/page/firstpage/</link>
+      <pubDate>Fri, 30 Sep 2022 13:33:30 +0200</pubDate>
+      
+      <guid>https://labicquette.github.io/page/firstpage/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          First page du project # This is the first page du project
+          
+        
+        </description>
+    </item>
+    
   </channel>
 </rss>
