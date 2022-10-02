@@ -1,7 +1,7 @@
 baseURL = 'https://labicquette.github.io'
 languageCode = 'en-us'
 title = "Theo Charlot's Website"
-theme = "hello-friend"
+theme = "hugo-theme-hello-friend-2"
 paginate = 1
 
 
