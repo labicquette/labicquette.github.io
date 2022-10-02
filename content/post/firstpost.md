@@ -12,3 +12,4 @@ asdf
  
  fasdf
  asf
+![Alt text](/img/archi_CEMERL.svg "a title")
