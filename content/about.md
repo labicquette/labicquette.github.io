@@ -6,5 +6,4 @@ cover : /img/rythmeplat250.jpeg
 ---
 
 
-this is some information about me 
-
+Hi, I'm Théo, I'm a Python Dev who likes to play with Deep RL algorithms. Besides that I do some photography that you can see here.

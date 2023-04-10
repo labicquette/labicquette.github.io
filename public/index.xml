@@ -15,6 +15,26 @@
     
     
     <item>
+      <title>Photography</title>
+      <link>https://labicquette.github.io/photography/</link>
+      <pubDate>Mon, 10 Apr 2023 09:46:23 +0200</pubDate>
+      
+      <guid>https://labicquette.github.io/photography/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          some things
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>Projects</title>
       <link>https://labicquette.github.io/projects/</link>
       <pubDate>Sat, 01 Oct 2022 14:48:05 +0200</pubDate>
@@ -28,7 +48,7 @@
         
         
         
-          those are some projects
+          Work in Progress
           
         
         </description>
@@ -47,7 +67,7 @@
         
         
         
-          this is some information about me
+          Hi, I&amp;rsquo;m Théo, I&amp;rsquo;m a Python Dev who likes to play with Deep RL algorithms. Besides that I do some photography that you can see here.
           
         
         </description>
@@ -61,13 +81,13 @@
       <guid>https://labicquette.github.io/post/firstpost/</guid>
       <description>
         
-          &lt;img src=&#34;https://labicquette.github.io/img/archi_CEMERL.svg&#34;/&gt;
+          
+          
           
         
         
         
-          first post # this is the first postsasdafdsafsdfadfs asdf
-fasdf asf
+           Combining Gradient Based Methods with Evolutionary Methods # this is the first post 
           
         
         </description>
@@ -87,7 +107,7 @@ fasdf asf
         
         
         
-          First page du project # This is the first page du project
+          First page du project # This is the first page du proje
           
         
         </description>
