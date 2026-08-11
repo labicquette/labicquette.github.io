@@ -7,13 +7,13 @@
 .navbar {
   box-shadow: none;
   border-bottom: 1px solid var(--global-divider-color);
-  background-color: var(--global-bg-color);
+  background-color: var(--global-navbar-bg-color);
   opacity: 0.95;
 }
 
 .navbar .dropdown-menu,
 .btn-group.dropdown .dropdown-menu {
-  background-color: var(--global-bg-color);
+  background-color: var(--global-navbar-bg-color);
   border: 1px solid var(--global-divider-color);
 
   a:not(.active) {

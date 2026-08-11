@@ -1,189 +1,147 @@
 cv:
-  name: Albert Einstein
-  label: Scientist
-  email: einstein@example.com
-  location: Princeton, NJ
+  name: Théo Charlot
+  label: Research Engineer
+  email: theocyrilcharlot@gmail.com
+  location: Paris, France
   image: ""
-  summary: A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time
+  summary: Research interests in human-inspired machine learning, developmentally-plausible machine learning, and human reasoning.
 
   social_networks:
-    - network: X
-      username: AlbertEinstein
     - network: GitHub
-      username: example
+      username: labicquette
     - network: LinkedIn
-      username: example
+      username: theo-cyril-charlot
 
   address:
-    street: 2712 Broadway St
-    city: San Francisco
-    region: California
-    postalCode: CA 94115
-    countryCode: US
+    city: Paris
+    countryCode: FR
 
   sections:
     Education:
-      - institution: University of Zurich
-        location: Zurich, Switzerland
-        url: https://www.uzh.ch/
-        area: Physics
-        studyType: PhD
-        start_date: 1900
-        end_date: 1905
-        score: ""
-        courses: "Theory of Relativity"
+      - institution: Nantes Université
+        area: Apprentissage et Traitement Automatique de la Langue (ATAL)
+        studyType: Master Degree in Computer Science
+        start_date: 2023
+        end_date: 2025
         highlights:
-          - Description 1.
-          - Description 2.
+          - "Highest Honors (rank 1st/14)"
+        courses:
+          - "M2: Language Modeling, Advanced NLP, Deep Learning, Scientific Communication"
+          - "M1: NLP, LLMs, LLM fine-tuning, Unsupervised Learning, Metaheuristics, Data Science, Algorithmics, Big Data"
 
-      - institution: Eidgenössische Technische Hochschule
-        location: Zurich, Switzerland
-        area: Physics
-        studyType: Federal teaching diploma
-        start_date: 1896
-        end_date: 1900
-        highlights:
-          - Description 1.
-          - Description 2.
+      - institution: Sorbonne Université
+        location: Paris, France
+        area: Computer Science
+        studyType: Bachelor
+        start_date: 2018
+        end_date: 2022
+        courses:
+          - "Reinforcement Learning, Supervised Learning, Data Science, Algorithmics, Web Fullstack, Linux Systems"
 
     Experience:
-      - company: Institute for Advanced Study, Princeton University
-        position: Professor of Theoretical Physics
-        location: Princeton University, NJ
-        start_date: 1933
-        end_date: 1955
-        summary: Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.
-        highlights:
-          - Relativity
-          - Description 2.
+      - company: École Normale Supérieure (ENS Ulm)
+        position: Research Engineer, CoML & LAAC teams
+        location: Paris, France
+        start_date: 2025-11
+        end_date: 2026-04
+        summary: "Who speaks to whom? Finetuning BabyHuBERT for child-directed speech (CDS) classification of adult speech."
 
-      - company: California Institute of Technology
-        position: Visiting Professor
-        location: Pasadena, California, US
-        start_date: 1933
-        end_date: 1933
-        highlights:
-          - Description 1.
-          - Description 2.
+      - company: École Normale Supérieure (ENS Ulm)
+        position: "M2 Research Intern, CoML team"
+        location: Paris, France
+        start_date: 2025-04
+        end_date: 2025-08
+        summary: "Who speaks when? Pretraining and fine-tuning BabyHuBERT, a speech representation model trained on 13k hours of multilingual child-centered egocentric audio for segmenting speakers."
 
-      - company: Kaiser Wilhelm Institute for Physics
-        position: Director
-        location: Berlin, Germany
-        start_date: 1917
-        end_date: 1933
+      - company: Inria Paris
+        position: "M1 Research Intern, ALMAnaCH team"
+        location: Paris, France
+        start_date: 2024-06
+        end_date: 2024-08
+        summary: Evaluation of LLMs' ability to accurately retrieve precise information in long dialogs. Experiments with inference approaches to tackle context limits (RAG, ChainOfThought, InfiniTransformers, MEMGpt).
 
-      - company: Karl-Ferdinand University
-        position: Professor of Theoretical Physics
-        location: Prague, Czechoslovakia
-        start_date: 1911
-        end_date: 1917
-
-      - company: University of Zurich
-        position: Associate Professor of Theoretical Physics
-        location: Zurich, Switzerland
-        start_date: 1909
-        end_date: 1911
-
-    Volunteer:
-      - company: People's Climate March
-        position: Lead Organizer
-        location: Zurich, Switzerland
-        start_date: 2014-04-01
-        end_date: 2015-07-01
-        summary: Lead organizer for the New York City branch of the People's Climate March, the largest climate march in history.
-        highlights:
-          - "Awarded 'Climate Hero' award by Greenpeace for my efforts organizing the march."
-          - "Men of the year 2014 by Time magazine"
+      - company: TNS Mars
+        position: Software Engineer
+        start_date: 2023-02
+        end_date: 2023-08
+        summary: In charge of implementing a lightweight AI-assisted video annotation tool using OpenCV.
 
     Awards:
-      - title: Nobel Prize in Physics
+      - title: Travel Grant
         authors:
-          - "Royal Swedish Academy of Sciences"
-        date: 1921-11-01
-        awarder: Royal Swedish Academy of Sciences
-        url: https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/
-        summary: The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'
-
-      - title: Max Planck Medal
-        authors:
-          - "German Physical Society"
-        date: 2029
-        awarder: German Physical Society
-        summary: Awarded for outstanding scientific achievement
+          - ATALA association
+        date: 2024
+        awarder: ATALA association
+        summary: Awarded for participation in DEFT2024 @ TALN2024, ExBERT.
 
     Publications:
-      - title: Zur Elektrodynamik bewegter Körper
+      - title: Context-aware child-directed speech detection from long-form recordings
         authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1905-06-30
-        url: https://en.wikisource.org/wiki/Translation:On_the_Electrodynamics_of_Moving_Bodies
-        summary: It concerned an interpretation of the Michelson–Morley experiment and the properties of light and time. Special relativity incorporates the principle that the speed of light is the same for all inertial observers regardless of the state of motion of the source.
+          - Théo Charlot
+          - Kunze
+          - Sheth
+          - Cristia
+          - Lavechin
+        publisher: Interspeech
+        releaseDate: "2026"
 
-      - title: Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt
+      - title: "BabyHuBERT: Multilingual Self-Supervised Learning for Segmenting Speakers in Child-Centered Long-Form Recordings"
         authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1905-03-18
-        url: https://de.wikisource.org/wiki/Über_einen_die_Erzeugung_und_Verwandlung_des_Lichtes_betreffenden_heuristischen_Gesichtspunkt
-        summary: In the second paper, he applied the quantum theory to light to explain the photoelectric effect. In particular, he used the idea of light quanta (photons) to explain experimental results, but stressed the importance of the experimental results. The importance of his work on the photoelectric effect earned him the Nobel Prize in Physics in 1921.
+          - Théo Charlot
+          - Kunze
+          - Poli
+          - Cristia
+          - Dupoux
+          - Lavechin
+        publisher: Interspeech
+        releaseDate: "2026"
 
-      - title: Die Grundlage der allgemeinen Relativitätstheorie
+      - title: "Frame of Reference: Addressing the Challenges of Common Ground Representation in Situational Dialogs"
         authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1916-03-20
-        url: https://de.wikisource.org/wiki/Die_Grundlage_der_allgemeinen_Relativitätstheorie
-        summary: The publication of the theory of general relativity made him internationally famous. He was professor of physics at the universities of Zurich (1909–1911) and Prague (1911–1912), before he returned to ETH Zurich (1912–1914).
-
-    Skills:
-      - name: Physics
-        level: Master
-        icon: fa-solid fa-hashtag
-        keywords: "Quantum Mechanics, Quantum Computing, Quantum Information, Quantum Cryptography, Quantum Communication, Quantum Teleportation"
-
-    Languages:
-      - name: German
-        summary: "Native speaker"
-
-      - name: English
-        summary: "Fluent"
-
-    Interests:
-      - name: Physics
-        icon: fa-solid fa-tag
-        keywords: "Quantum Mechanics, Quantum Computing, Quantum Information, Quantum Cryptography, Quantum Communication, Quantum Teleportation"
-
-    Certificates:
-      - name: Machine Learning
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-location-dot
-
-      - name: Quantum Computing
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-tag
-
-      - name: Quantum Information
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-envelope
+          - Mohapatra
+          - Théo Charlot
+          - Duca
+          - Palan
+          - Romary
+          - Cassell
+        publisher: Findings of ACL
+        releaseDate: "2026"
 
     Projects:
-      - name: Quantum Computing
-        summary: Quantum computing is the use of quantum-mechanical phenomena such as superposition and entanglement to perform computation. Computers that perform quantum computations are known as quantum computers.
-        highlights:
-          - Quantum Teleportation
-          - Quantum Cryptography
-        start_date: 2018-01-01
-        end_date: 2018-01-01
+      - name: Summarization of U.S. Supreme Court Opinions
+        summary: "Frugal on-device summarization for very long documents (100k+ tokens) with quantized models (Llama 1B Q4_K_M) and creation of an audio dataset (2k+ hours) for audio-only argument opinions."
+        start_date: 2024
+        end_date: 2025
 
-    References:
-      - name: Professor John Doe
-        icon: fa-solid fa-laptop
-        reference: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit.
+      - name: CEM-ERL
+        summary: "Development and analysis of a deep RL algorithm combining a SOTA population and gradient based algorithm (CEM-RL) with evolutionary methods (ERL)."
+        start_date: 2022
+        end_date: 2022
 
-      - name: Professor Jane Smith
-        icon: fa-solid fa-thumbtack
-        reference: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit.
+    Skills:
+      - name: NLP & Machine Learning
+        keywords: "Language Modeling, Advanced NLP, Deep Learning, LLM fine-tuning, RAG, ChainOfThought, Unsupervised Learning, Reinforcement Learning, Supervised Learning, Metaheuristics"
+        icon: fa-solid fa-brain
+
+      - name: Data & Systems
+        keywords: "Data Science, Algorithmics, Big Data, Web Fullstack, Linux Systems"
+        icon: fa-solid fa-server
+
+    Languages:
+      - name: French
+        summary: "Native"
+
+      - name: Italian
+        summary: "Bilingual"
+
+      - name: English
+        summary: "TOEIC: 945/990, C1"
+
+    Interests:
+      - name: Research Interests
+        icon: fa-solid fa-lightbulb
+        keywords: "Human-inspired machine learning, Developmentally-plausible machine learning, Human reasoning"
+
+    Associations:
+      - label: "Former Member"
+        details: "ATALA; Petits pieds nantais (environmental); Nantes Université's young researchers LOGIN"
