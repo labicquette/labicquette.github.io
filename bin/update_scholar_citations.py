@@ -4,7 +4,7 @@ import os
 import sys
 import yaml
 from datetime import datetime
-from scholarly import scholarly
+from scholarly import scholarly, ProxyGenerator
 
 
 def load_scholar_user_id() -> str:
@@ -32,6 +32,23 @@ def load_scholar_user_id() -> str:
         sys.exit(1)
 
 
+def setup_proxy() -> None:
+    """Route scholarly's requests through ScraperAPI to avoid Google Scholar IP blocking."""
+    api_key = os.environ.get("SCRAPERAPI_API_KEY")
+    if not api_key:
+        print(
+            "No SCRAPERAPI_API_KEY environment variable found. Please set it to your ScraperAPI key "
+            "(sign up at https://www.scraperapi.com/) and add it as a GitHub Actions secret."
+        )
+        sys.exit(1)
+    pg = ProxyGenerator()
+    success = pg.ScraperAPI(api_key)
+    if not success:
+        print("Failed to configure ScraperAPI proxy. Please check your SCRAPERAPI_API_KEY.")
+        sys.exit(1)
+    scholarly.use_proxy(pg)
+
+
 SCHOLAR_USER_ID: str = load_scholar_user_id()
 OUTPUT_FILE: str = "_data/citations.yml"
 
@@ -41,6 +58,7 @@ def get_scholar_citations() -> None:
     print(f"Fetching citations for Google Scholar ID: {SCHOLAR_USER_ID}")
     today = datetime.now().strftime("%Y-%m-%d")
 
+    existing_data = None
     # Check if the output file was already updated today
     if os.path.exists(OUTPUT_FILE):
         try:
@@ -62,7 +80,7 @@ def get_scholar_citations() -> None:
 
     citation_data = {"metadata": {"last_updated": today}, "papers": {}}
 
-    scholarly.set_timeout(15)
+    scholarly.set_timeout(60)
     scholarly.set_retries(3)
     try:
         author = scholarly.search_author_id(SCHOLAR_USER_ID)
@@ -126,6 +144,7 @@ def get_scholar_citations() -> None:
 
 if __name__ == "__main__":
     try:
+        setup_proxy()
         get_scholar_citations()
     except Exception as e:
         print(f"Unexpected error: {e}")
