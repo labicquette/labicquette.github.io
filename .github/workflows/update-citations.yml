@@ -51,7 +51,7 @@ jobs:
           set +e
           echo "🚀 Running citation update script (single attempt)..."
           start_time=$(date)
-          timeout 240 python bin/update_scholar_citations.py
+          timeout 240 python -u bin/update_scholar_citations.py
           status=$?
           end_time=$(date)
           if [ $status -eq 0 ]; then

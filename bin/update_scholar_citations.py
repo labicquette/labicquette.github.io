@@ -41,12 +41,15 @@ def setup_proxy() -> None:
             "(sign up at https://www.scraperapi.com/) and add it as a GitHub Actions secret."
         )
         sys.exit(1)
+    print("Configuring ScraperAPI proxy...")
     pg = ProxyGenerator()
     success = pg.ScraperAPI(api_key)
+    print(f"ScraperAPI proxy configuration returned: {success}")
     if not success:
         print("Failed to configure ScraperAPI proxy. Please check your SCRAPERAPI_API_KEY.")
         sys.exit(1)
     scholarly.use_proxy(pg)
+    print("Proxy attached to scholarly.")
 
 
 SCHOLAR_USER_ID: str = load_scholar_user_id()
@@ -80,11 +83,15 @@ def get_scholar_citations() -> None:
 
     citation_data = {"metadata": {"last_updated": today}, "papers": {}}
 
-    scholarly.set_timeout(60)
-    scholarly.set_retries(3)
+    scholarly.set_timeout(30)
+    scholarly.set_retries(1)
     try:
+        print("Calling scholarly.search_author_id...")
         author = scholarly.search_author_id(SCHOLAR_USER_ID)
+        print(f"search_author_id returned: {author.get('name', 'unknown') if author else author}")
+        print("Calling scholarly.fill...")
         author_data = scholarly.fill(author)
+        print("scholarly.fill completed.")
     except Exception as e:
         print(
             f"Error fetching author data from Google Scholar for user ID '{SCHOLAR_USER_ID}': {e}. Please check your internet connection and Scholar user ID."
