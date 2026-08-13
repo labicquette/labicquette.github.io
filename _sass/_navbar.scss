@@ -11,6 +11,18 @@
   opacity: 0.95;
 }
 
+.procedural-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 26px;
+  height: 26px;
+  margin-right: 8px;
+
+  svg {
+    display: block;
+  }
+}
+
 .navbar .dropdown-menu,
 .btn-group.dropdown .dropdown-menu {
   background-color: var(--global-navbar-bg-color);

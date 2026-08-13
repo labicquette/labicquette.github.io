@@ -101,6 +101,21 @@
 }
 
 .post {
+  position: relative;
+
+  .post-icon {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: -440px;
+    width: 420px;
+    height: 420px;
+
+    @media (min-width: 1900px) {
+      display: block;
+    }
+  }
+
   .post-meta {
     color: var(--global-text-color-light);
     font-size: 0.875rem;

@@ -2,17 +2,15 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: blank # the website title (if blank, full name will be used instead)
+title: Théo Charlot # the website title (if blank, full name will be used instead)
 first_name: Théo
 middle_name:
 last_name: Charlot
-contact_note: >
-  You can even add a little note about which of these is the best way to reach you. another one
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Théo Charlot is a Research Engineer at ENS Ulm (CoML & LAAC teams), working on speech representation learning, child-directed speech detection, and human-inspired machine learning.
-keywords: Théo Charlot, speech processing, child-directed speech, NLP, machine learning, self-supervised learning, ENS Ulm, CoML # add your own keywords or leave empty
+keywords: Théo Charlot, speech processing, child-directed speech, NLP, machine learning, self-supervised learning, ENS Ulm, CoML, research # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
-icon: ⚛️ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
+icon: favicon.svg # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://www.tcharlot.com # the base hostname & protocol for your site
 baseurl: # the subpath of your site, e.g. /blog/. Leave blank for root
