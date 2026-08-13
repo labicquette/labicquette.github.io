@@ -78,32 +78,32 @@ cv:
       - title: Context-aware child-directed speech detection from long-form recordings
         authors:
           - Théo Charlot
-          - Kunze
-          - Sheth
-          - Cristia
-          - Lavechin
+          - Tarek Kunze
+          - Kaveri K. Sheth
+          - Alejandrina Cristia
+          - Marvin Lavechin
         publisher: Interspeech
         releaseDate: "2026"
 
       - title: "BabyHuBERT: Multilingual Self-Supervised Learning for Segmenting Speakers in Child-Centered Long-Form Recordings"
         authors:
           - Théo Charlot
-          - Kunze
-          - Poli
-          - Cristia
-          - Dupoux
-          - Lavechin
+          - Tarek Kunze
+          - Maxime Poli
+          - Alejandrina Cristia
+          - Emmanuel Dupoux
+          - Marvin Lavechin
         publisher: Interspeech
         releaseDate: "2026"
 
       - title: "Frame of Reference: Addressing the Challenges of Common Ground Representation in Situational Dialogs"
         authors:
-          - Mohapatra
+          - Biswesh Mohapatra
           - Théo Charlot
-          - Duca
-          - Palan
-          - Romary
-          - Cassell
+          - Giovanni Duca
+          - Mayank Palan
+          - Laurent Romary
+          - Justine Cassell
         publisher: Findings of ACL
         releaseDate: "2026"
 

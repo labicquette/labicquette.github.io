@@ -37,7 +37,15 @@
     margin-top: 0;
 
     li {
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--global-theme-color);
+
+      &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
 
       .preview {
         display: inline-block;
