@@ -116,6 +116,33 @@
     }
   }
 
+  .post-icon-label {
+    display: none;
+    position: absolute;
+    top: 424px;
+    left: -440px;
+    width: 420px;
+    text-align: center;
+    font-family: monospace;
+
+    @media (min-width: 1900px) {
+      display: block;
+    }
+  }
+
+  .post-icon-topo {
+    display: none;
+    position: absolute;
+    top: 456px;
+    left: -440px;
+    width: 420px;
+    height: 420px;
+
+    @media (min-width: 1900px) {
+      display: block;
+    }
+  }
+
   .post-meta {
     color: var(--global-text-color-light);
     font-size: 0.875rem;

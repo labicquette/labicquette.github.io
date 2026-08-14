@@ -34,7 +34,8 @@
 
   function drawContainFit(ctx, img, width, height) {
     var rect = getContainRect(img, width, height);
-    ctx.fillStyle = "#fff";
+    var bgColor = getComputedStyle(document.documentElement).getPropertyValue("--global-bg-color").trim() || "#fff";
+    ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, width, height);
     ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, rect.dx, rect.dy, rect.dw, rect.dh);
   }
@@ -140,29 +141,204 @@
     }
   }
 
-  function mountIcons() {
-    var containers = document.querySelectorAll(".procedural-icon");
-    if (!containers.length) return;
+  // --- Topographic contour map ---------------------------------------------
+  // Port of the `topo_map` function from the flower-filtering notebook:
+  // brightness is treated as "elevation", isolines are traced at evenly spaced
+  // levels via marching squares, and each line is colored by sampling the
+  // original photo at that point. Every TOPO_INDEX_EVERY-th level is drawn
+  // thicker, like index contours on a real topo map.
+  var TOPO_LEVELS = 16;
+  var TOPO_BLUR_FRACTION = 0.02; // blur radius, relative to canvas width
+  var TOPO_STEP = 4; // marching-squares grid step, px
+  var TOPO_INDEX_EVERY = 5;
+  var TOPO_LINE_WIDTH = 1;
+  var TOPO_INDEX_LINE_WIDTH = 2;
 
+  function computeElevationAndColor(img, width, height) {
+    var off = document.createElement("canvas");
+    off.width = width;
+    off.height = height;
+    var offCtx = off.getContext("2d");
+    drawContainFit(offCtx, img, width, height);
+    var colorData = offCtx.getImageData(0, 0, width, height).data;
+
+    var blurOff = document.createElement("canvas");
+    blurOff.width = width;
+    blurOff.height = height;
+    var blurCtx = blurOff.getContext("2d");
+    blurCtx.filter = "blur(" + Math.max(1, Math.round(width * TOPO_BLUR_FRACTION)) + "px) grayscale(1)";
+    blurCtx.drawImage(off, 0, 0);
+    var blurData = blurCtx.getImageData(0, 0, width, height).data;
+
+    var elevation = new Float32Array(width * height);
+    for (var p = 0; p < width * height; p++) {
+      elevation[p] = blurData[p * 4];
+    }
+
+    return { elevation: elevation, colorData: colorData };
+  }
+
+  function sampleRgb(colorData, width, height, x, y) {
+    var ix = Math.min(width - 1, Math.max(0, Math.round(x)));
+    var iy = Math.min(height - 1, Math.max(0, Math.round(y)));
+    var idx = (iy * width + ix) * 4;
+    return [colorData[idx], colorData[idx + 1], colorData[idx + 2]];
+  }
+
+  // Linearly interpolate where `threshold` crosses the edge between two corner
+  // values, instead of snapping to the fixed edge midpoint -- this is what makes
+  // the contours follow smooth curves rather than a blocky, grid-aligned look.
+  function interpEdge(val1, val2, threshold, p1, p2) {
+    var t = (threshold - val1) / (val2 - val1);
+    t = Math.max(0, Math.min(1, t));
+    return [p1[0] + t * (p2[0] - p1[0]), p1[1] + t * (p2[1] - p1[1])];
+  }
+
+  // Standard 16-case marching squares with linear interpolation along crossed edges.
+  // Every segment at this level shares one averaged color (sampled from the photo
+  // at each segment's midpoint, then averaged), so the whole contour line reads as
+  // a single solid color rather than flickering between per-segment samples.
+  function drawContourLevel(ctx, elevation, colorData, width, height, threshold, step, lineWidth) {
+    var allSegs = [];
+    var sumR = 0;
+    var sumG = 0;
+    var sumB = 0;
+
+    for (var y = 0; y + step < height; y += step) {
+      for (var x = 0; x + step < width; x += step) {
+        var tlVal = elevation[y * width + x];
+        var trVal = elevation[y * width + (x + step)];
+        var brVal = elevation[(y + step) * width + (x + step)];
+        var blVal = elevation[(y + step) * width + x];
+        var tl = tlVal >= threshold;
+        var tr = trVal >= threshold;
+        var br = brVal >= threshold;
+        var bl = blVal >= threshold;
+        var caseIdx = (tl ? 8 : 0) | (tr ? 4 : 0) | (br ? 2 : 0) | (bl ? 1 : 0);
+        if (caseIdx === 0 || caseIdx === 15) continue;
+
+        var tlP = [x, y];
+        var trP = [x + step, y];
+        var brP = [x + step, y + step];
+        var blP = [x, y + step];
+
+        var topMid = interpEdge(tlVal, trVal, threshold, tlP, trP);
+        var rightMid = interpEdge(trVal, brVal, threshold, trP, brP);
+        var bottomMid = interpEdge(blVal, brVal, threshold, blP, brP);
+        var leftMid = interpEdge(tlVal, blVal, threshold, tlP, blP);
+        var segs;
+
+        switch (caseIdx) {
+          case 1: segs = [[leftMid, bottomMid]]; break;
+          case 2: segs = [[bottomMid, rightMid]]; break;
+          case 3: segs = [[leftMid, rightMid]]; break;
+          case 4: segs = [[topMid, rightMid]]; break;
+          case 5: segs = [[topMid, leftMid], [bottomMid, rightMid]]; break;
+          case 6: segs = [[topMid, bottomMid]]; break;
+          case 7: segs = [[topMid, leftMid]]; break;
+          case 8: segs = [[topMid, leftMid]]; break;
+          case 9: segs = [[topMid, bottomMid]]; break;
+          case 10: segs = [[topMid, rightMid], [bottomMid, leftMid]]; break;
+          case 11: segs = [[topMid, rightMid]]; break;
+          case 12: segs = [[leftMid, rightMid]]; break;
+          case 13: segs = [[bottomMid, rightMid]]; break;
+          case 14: segs = [[leftMid, bottomMid]]; break;
+          default: segs = []; break;
+        }
+
+        for (var s = 0; s < segs.length; s++) {
+          var p1 = segs[s][0];
+          var p2 = segs[s][1];
+          var midX = (p1[0] + p2[0]) / 2;
+          var midY = (p1[1] + p2[1]) / 2;
+          var rgb = sampleRgb(colorData, width, height, midX, midY);
+          sumR += rgb[0];
+          sumG += rgb[1];
+          sumB += rgb[2];
+          allSegs.push([p1, p2]);
+        }
+      }
+    }
+
+    if (!allSegs.length) return;
+
+    var avgColor =
+      "rgb(" +
+      Math.round(sumR / allSegs.length) +
+      "," +
+      Math.round(sumG / allSegs.length) +
+      "," +
+      Math.round(sumB / allSegs.length) +
+      ")";
+
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = avgColor;
+    ctx.beginPath();
+    for (var i = 0; i < allSegs.length; i++) {
+      ctx.moveTo(allSegs[i][0][0], allSegs[i][0][1]);
+      ctx.lineTo(allSegs[i][1][0], allSegs[i][1][1]);
+    }
+    ctx.stroke();
+  }
+
+  function topoMap(canvas, img) {
+    var width = canvas.width;
+    var height = canvas.height;
+    var ctx = canvas.getContext("2d");
+
+    var bgColor = getComputedStyle(document.documentElement).getPropertyValue("--global-bg-color").trim() || "#fff";
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, width, height);
+
+    var data = computeElevationAndColor(img, width, height);
+
+    for (var i = 1; i <= TOPO_LEVELS; i++) {
+      var threshold = (255 * i) / (TOPO_LEVELS + 1);
+      var isIndex = i % TOPO_INDEX_EVERY === 0;
+      drawContourLevel(
+        ctx,
+        data.elevation,
+        data.colorData,
+        width,
+        height,
+        threshold,
+        TOPO_STEP,
+        isIndex ? TOPO_INDEX_LINE_WIDTH : TOPO_LINE_WIDTH
+      );
+    }
+  }
+
+  function renderInto(containers, img, renderFn) {
+    containers.forEach(function (container) {
+      container.innerHTML = "";
+      var width = Math.max(container.offsetWidth, 1);
+      var height = Math.max(container.offsetHeight, width);
+      var dpr = window.devicePixelRatio || 1;
+
+      var canvas = document.createElement("canvas");
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.classList.add("procedural-icon-canvas");
+      container.appendChild(canvas);
+
+      renderFn(canvas, img);
+    });
+  }
+
+  function mountAll() {
+    var stippleContainers = document.querySelectorAll(".procedural-icon");
+    var topoContainers = document.querySelectorAll(".procedural-icon-topo");
+    if (!stippleContainers.length && !topoContainers.length) return;
+
+    // Both renderers share the same randomly picked photo per page load.
     var src = pickImageSrc();
     var img = new Image();
     img.onload = function () {
-      containers.forEach(function (container) {
-        container.innerHTML = "";
-        var width = Math.max(container.offsetWidth, 1);
-        var height = Math.max(container.offsetHeight, width);
-        var dpr = window.devicePixelRatio || 1;
-
-        var canvas = document.createElement("canvas");
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.classList.add("procedural-icon-canvas");
-        container.appendChild(canvas);
-
-        stipple(canvas, img);
-      });
+      renderInto(stippleContainers, img, stipple);
+      renderInto(topoContainers, img, topoMap);
     };
     img.onerror = function () {
       console.warn("procedural-icon: failed to load " + src);
@@ -171,8 +347,8 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountIcons);
+    document.addEventListener("DOMContentLoaded", mountAll);
   } else {
-    mountIcons();
+    mountAll();
   }
 })();
