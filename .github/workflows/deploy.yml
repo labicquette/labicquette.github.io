@@ -108,3 +108,4 @@ jobs:
           projectName: labicquette-github-io
           directory: _site
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
