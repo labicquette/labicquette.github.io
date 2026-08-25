@@ -150,10 +150,13 @@
   var TOPO_LEVELS = 16;
   var TOPO_BLUR_FRACTION = 0.035; // blur radius, relative to canvas width -- higher = fewer sharp zigzags to trace
   var TOPO_STEP = 3; // marching-squares grid step, px -- smaller = more points per curve, smoother look
+  var TOPO_MIN_FEATURE_SIZE = TOPO_STEP * 6; // discard contours smaller than this -- noise-scale blips, not real features
   var TOPO_INDEX_EVERY = 5;
   var TOPO_LINE_WIDTH = 1;
   var TOPO_INDEX_LINE_WIDTH = 2;
   var TOPO_SMOOTH_ITERATIONS = 3; // Chaikin corner-cutting passes on each traced line
+  var TOPO_LAPLACIAN_ITERATIONS = 4; // low-pass passes to kill sawtooth noise before Chaikin
+  var MIN_SMOOTH_POINTS = 10; // below this, a loop is small enough that smoothing would just shrink it to a dot
 
   function computeElevationAndColor(img, width, height) {
     var off = document.createElement("canvas");
@@ -342,6 +345,34 @@
     return polylines;
   }
 
+  // Averages each point toward its neighbors along the line, i.e. a low-pass
+  // filter on point position. Unlike Chaikin (which only rounds corners),
+  // this is what actually kills small sawtooth wiggle -- residual per-cell
+  // noise in the blurred elevation map that's too fine for Chaikin alone to
+  // smooth away in a couple of passes.
+  function laplacianSmooth(points, iterations) {
+    if (points.length < 3) return points;
+    var closed = pointKey(points[0]) === pointKey(points[points.length - 1]);
+    var pts = points;
+    var n = pts.length;
+    for (var it = 0; it < iterations; it++) {
+      var newPts = pts.slice();
+      var start = closed ? 0 : 1;
+      var end = closed ? n : n - 1;
+      for (var i = start; i < end; i++) {
+        var prevIdx = closed ? (i - 1 + n) % n : i - 1;
+        var nextIdx = closed ? (i + 1) % n : i + 1;
+        var prev = pts[prevIdx];
+        var next = pts[nextIdx];
+        var cur = pts[i];
+        newPts[i] = [0.5 * cur[0] + 0.25 * prev[0] + 0.25 * next[0], 0.5 * cur[1] + 0.25 * prev[1] + 0.25 * next[1]];
+      }
+      if (closed) newPts[n - 1] = newPts[0];
+      pts = newPts;
+    }
+    return pts;
+  }
+
   // Chaikin corner-cutting: repeatedly replace each edge with two points at its
   // quarter marks, rounding off every kink left by the per-cell tracing. This is
   // what actually removes the "staircase" look -- blurring the source only
@@ -513,7 +544,42 @@
   // only in proportion to that agreement, so a truly consistent-color line reads
   // vividly correct while a line that (rarely, now that grouping is per-component)
   // still crosses mixed hues falls back toward gray instead of a wrong vivid one.
+  function groupExtent(group) {
+    var minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
+    for (var i = 0; i < group.length; i++) {
+      var p1 = group[i].p1;
+      var p2 = group[i].p2;
+      minX = Math.min(minX, p1[0], p2[0]);
+      maxX = Math.max(maxX, p1[0], p2[0]);
+      minY = Math.min(minY, p1[1], p2[1]);
+      maxY = Math.max(maxY, p1[1], p2[1]);
+    }
+    return Math.max(maxX - minX, maxY - minY);
+  }
+
+  function polylineExtent(points) {
+    var minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
+    for (var i = 0; i < points.length; i++) {
+      minX = Math.min(minX, points[i][0]);
+      maxX = Math.max(maxX, points[i][0]);
+      minY = Math.min(minY, points[i][1]);
+      maxY = Math.max(maxY, points[i][1]);
+    }
+    return Math.max(maxX - minX, maxY - minY);
+  }
+
   function drawGroup(ctx, group) {
+    // A contour whose whole extent is barely a grid cell or two is a noise
+    // blip in the elevation map, not a real feature -- at round-cap linewidth
+    // it just renders as a stray dot, so drop it instead of stroking it.
+    if (groupExtent(group) < TOPO_MIN_FEATURE_SIZE) return;
+
     var sumHueSin = 0;
     var sumHueCos = 0;
     var sumSat = 0;
@@ -542,7 +608,24 @@
     var polylines = buildPolylines(group);
     ctx.beginPath();
     for (var s = 0; s < polylines.length; s++) {
-      var pts = chaikinSmooth(polylines[s], TOPO_SMOOTH_ITERATIONS);
+      var raw = polylines[s];
+      // A branch point (from an ambiguous saddle, where two diagonal corners
+      // agree) can split one group into a main line plus a short leftover
+      // stub. The group as a whole is large enough to pass the group-extent
+      // check above, but the stub itself can be a near-zero-length blip that
+      // renders as a dot -- so also filter each individual polyline.
+      if (polylineExtent(raw) < TOPO_MIN_FEATURE_SIZE) continue;
+
+      // Both passes cut area off closed loops on every iteration; a loop with
+      // few points to begin with (a tiny peak/pit contour) can collapse to
+      // near-nothing, which a round line cap then renders as a stray dot.
+      // Below MIN_SMOOTH_POINTS the feature is already small enough that the
+      // staircasing isn't visible, so just skip smoothing it.
+      var pts = raw;
+      if (raw.length >= MIN_SMOOTH_POINTS) {
+        var smoothed = laplacianSmooth(raw, TOPO_LAPLACIAN_ITERATIONS);
+        pts = chaikinSmooth(smoothed, TOPO_SMOOTH_ITERATIONS);
+      }
       ctx.moveTo(pts[0][0], pts[0][1]);
       for (var p = 1; p < pts.length; p++) {
         ctx.lineTo(pts[p][0], pts[p][1]);
