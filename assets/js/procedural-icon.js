@@ -191,9 +191,15 @@
     if (d !== 0) {
       s = d / (1 - Math.abs(2 * l - 1));
       switch (maxC) {
-        case r: h = ((g - b) / d) % 6; break;
-        case g: h = (b - r) / d + 2; break;
-        default: h = (r - g) / d + 4; break;
+        case r:
+          h = ((g - b) / d) % 6;
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        default:
+          h = (r - g) / d + 4;
+          break;
       }
       h *= 60;
       if (h < 0) h += 360;
@@ -206,12 +212,31 @@
     var x = c * (1 - Math.abs(((h / 60) % 2) - 1));
     var m = l - c / 2;
     var r, g, b;
-    if (h < 60) { r = c; g = x; b = 0; }
-    else if (h < 120) { r = x; g = c; b = 0; }
-    else if (h < 180) { r = 0; g = c; b = x; }
-    else if (h < 240) { r = 0; g = x; b = c; }
-    else if (h < 300) { r = x; g = 0; b = c; }
-    else { r = c; g = 0; b = x; }
+    if (h < 60) {
+      r = c;
+      g = x;
+      b = 0;
+    } else if (h < 120) {
+      r = x;
+      g = c;
+      b = 0;
+    } else if (h < 180) {
+      r = 0;
+      g = c;
+      b = x;
+    } else if (h < 240) {
+      r = 0;
+      g = x;
+      b = c;
+    } else if (h < 300) {
+      r = x;
+      g = 0;
+      b = c;
+    } else {
+      r = c;
+      g = 0;
+      b = x;
+    }
     return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
   }
 
@@ -293,21 +318,57 @@
         var segs;
 
         switch (caseIdx) {
-          case 1: segs = [[leftMid, bottomMid]]; break;
-          case 2: segs = [[bottomMid, rightMid]]; break;
-          case 3: segs = [[leftMid, rightMid]]; break;
-          case 4: segs = [[topMid, rightMid]]; break;
-          case 5: segs = [[topMid, leftMid], [bottomMid, rightMid]]; break;
-          case 6: segs = [[topMid, bottomMid]]; break;
-          case 7: segs = [[topMid, leftMid]]; break;
-          case 8: segs = [[topMid, leftMid]]; break;
-          case 9: segs = [[topMid, bottomMid]]; break;
-          case 10: segs = [[topMid, rightMid], [bottomMid, leftMid]]; break;
-          case 11: segs = [[topMid, rightMid]]; break;
-          case 12: segs = [[leftMid, rightMid]]; break;
-          case 13: segs = [[bottomMid, rightMid]]; break;
-          case 14: segs = [[leftMid, bottomMid]]; break;
-          default: segs = []; break;
+          case 1:
+            segs = [[leftMid, bottomMid]];
+            break;
+          case 2:
+            segs = [[bottomMid, rightMid]];
+            break;
+          case 3:
+            segs = [[leftMid, rightMid]];
+            break;
+          case 4:
+            segs = [[topMid, rightMid]];
+            break;
+          case 5:
+            segs = [
+              [topMid, leftMid],
+              [bottomMid, rightMid],
+            ];
+            break;
+          case 6:
+            segs = [[topMid, bottomMid]];
+            break;
+          case 7:
+            segs = [[topMid, leftMid]];
+            break;
+          case 8:
+            segs = [[topMid, leftMid]];
+            break;
+          case 9:
+            segs = [[topMid, bottomMid]];
+            break;
+          case 10:
+            segs = [
+              [topMid, rightMid],
+              [bottomMid, leftMid],
+            ];
+            break;
+          case 11:
+            segs = [[topMid, rightMid]];
+            break;
+          case 12:
+            segs = [[leftMid, rightMid]];
+            break;
+          case 13:
+            segs = [[bottomMid, rightMid]];
+            break;
+          case 14:
+            segs = [[leftMid, bottomMid]];
+            break;
+          default:
+            segs = [];
+            break;
         }
 
         for (var s = 0; s < segs.length; s++) {
@@ -411,16 +472,7 @@
     for (var i = 1; i <= TOPO_LEVELS; i++) {
       var threshold = (255 * i) / (TOPO_LEVELS + 1);
       var isIndex = i % TOPO_INDEX_EVERY === 0;
-      drawContourLevel(
-        ctx,
-        data.elevation,
-        data.colorData,
-        width,
-        height,
-        threshold,
-        TOPO_STEP,
-        isIndex ? TOPO_INDEX_LINE_WIDTH : TOPO_LINE_WIDTH
-      );
+      drawContourLevel(ctx, data.elevation, data.colorData, width, height, threshold, TOPO_STEP, isIndex ? TOPO_INDEX_LINE_WIDTH : TOPO_LINE_WIDTH);
     }
   }
 

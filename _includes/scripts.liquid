@@ -183,8 +183,8 @@
 <script src="{{ '/assets/js/no_defer.js' | relative_url | bust_file_cache }}"></script>
 <script defer src="{{ '/assets/js/common.js' | relative_url | bust_file_cache }}"></script>
 <script defer src="{{ '/assets/js/copy_code.js' | relative_url | bust_file_cache }}" type="text/javascript"></script>
-{% assign flower_photos = site.static_files | where_exp: "file", "file.path contains '/assets/img/flowers/'" %}
-{% assign flower_photos = flower_photos | where_exp: "file", "file.extname == '.jpg'" %}
+{% assign flower_photos = site.static_files | where_exp: 'file', "file.path contains '/assets/img/flowers/'" %}
+{% assign flower_photos = flower_photos | where_exp: 'file', "file.extname == '.jpg'" %}
 <script>
   window.PROCEDURAL_FLOWER_IMAGES = [
     {% for photo in flower_photos %}"{{ photo.path | relative_url }}"{% unless forloop.last %},{% endunless %}{% endfor %}
