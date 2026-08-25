@@ -96,8 +96,25 @@ jobs:
       - name: Commit and push if changed
         run: |
           git add _data/citations.yml _bibliography/papers.bib
-          git diff --staged --quiet || (
-            echo "📤 Committing and pushing changes..."
-            git commit -m "Update Google Scholar citations"
-            git push
-          )
+          if git diff --staged --quiet; then
+            echo "ℹ️ Nothing to commit."
+            exit 0
+          fi
+
+          echo "📤 Committing changes..."
+          git commit -m "Update Google Scholar citations"
+
+          echo "🚀 Pushing (with retry on non-fast-forward races)..."
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "✅ Pushed successfully."
+              exit 0
+            fi
+            echo "⚠️ Push rejected (attempt $attempt/5), rebasing onto latest main and retrying..."
+            git fetch origin main
+            git rebase origin/main
+            sleep $((attempt * 3))
+          done
+
+          echo "❌ Failed to push after 5 attempts."
+          exit 1
