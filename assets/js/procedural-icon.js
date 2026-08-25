@@ -148,8 +148,8 @@
   // original photo at that point. Every TOPO_INDEX_EVERY-th level is drawn
   // thicker, like index contours on a real topo map.
   var TOPO_LEVELS = 16;
-  var TOPO_BLUR_FRACTION = 0.02; // blur radius, relative to canvas width
-  var TOPO_STEP = 4; // marching-squares grid step, px
+  var TOPO_BLUR_FRACTION = 0.035; // blur radius, relative to canvas width -- higher = fewer sharp zigzags to trace
+  var TOPO_STEP = 3; // marching-squares grid step, px -- smaller = more points per curve, smoother look
   var TOPO_INDEX_EVERY = 5;
   var TOPO_LINE_WIDTH = 1;
   var TOPO_INDEX_LINE_WIDTH = 2;
@@ -409,6 +409,7 @@
 
     ctx.lineWidth = lineWidth;
     ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
     Object.keys(groups).forEach(function (root) {
       var group = groups[root];
@@ -476,6 +477,13 @@
     }
   }
 
+  // Canvases read theme colors (--global-bg-color etc.) at draw time and bake
+  // them into pixel data, so nothing updates on its own when the theme toggles.
+  // Keep what we drew and re-invoke the same render function on the same photo
+  // (no re-picking a new random image) whenever the theme actually changes.
+  var renderedTargets = [];
+  var loadedImg = null;
+
   function renderInto(containers, img, renderFn) {
     containers.forEach(function (container) {
       container.innerHTML = "";
@@ -492,6 +500,7 @@
       container.appendChild(canvas);
 
       renderFn(canvas, img);
+      renderedTargets.push({ canvas: canvas, renderFn: renderFn });
     });
   }
 
@@ -504,6 +513,8 @@
     var src = pickImageSrc();
     var img = new Image();
     img.onload = function () {
+      loadedImg = img;
+      renderedTargets = [];
       renderInto(stippleContainers, img, stipple);
       renderInto(topoContainers, img, topoMap);
     };
@@ -513,9 +524,35 @@
     img.src = src;
   }
 
+  function redrawForThemeChange() {
+    if (!loadedImg) return;
+    renderedTargets.forEach(function (target) {
+      target.renderFn(target.canvas, loadedImg);
+    });
+  }
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", mountAll);
   } else {
     mountAll();
   }
+
+  // The theme toggle sets data-theme on <html>. It cycles through three
+  // settings (system -> light -> dark -> ...), so a click can leave the
+  // *computed* theme unchanged (e.g. system happens to resolve to the same
+  // theme as before) while still touching the attribute -- only redraw when
+  // the value actually differs, to skip that no-op case.
+  var lastTheme = document.documentElement.getAttribute("data-theme");
+  new MutationObserver(function (mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+      if (mutations[i].attributeName === "data-theme") {
+        var current = document.documentElement.getAttribute("data-theme");
+        if (current !== lastTheme) {
+          lastTheme = current;
+          redrawForThemeChange();
+        }
+        break;
+      }
+    }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 })();
