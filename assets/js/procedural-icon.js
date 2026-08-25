@@ -153,6 +153,7 @@
   var TOPO_INDEX_EVERY = 5;
   var TOPO_LINE_WIDTH = 1;
   var TOPO_INDEX_LINE_WIDTH = 2;
+  var TOPO_SMOOTH_ITERATIONS = 3; // Chaikin corner-cutting passes on each traced line
 
   function computeElevationAndColor(img, width, height) {
     var off = document.createElement("canvas");
@@ -279,6 +280,93 @@
 
   function pointKey(pt) {
     return pt[0].toFixed(3) + "," + pt[1].toFixed(3);
+  }
+
+  // Marching squares emits each connected contour as a bag of disjoint per-cell
+  // segments. Chase shared endpoints to stitch them back into ordered polylines
+  // (open chains or closed loops) so they can be smoothed as a single curve
+  // instead of stroked as a pile of independently-angled little lines.
+  function buildPolylines(group) {
+    var pointMap = {};
+    var adj = {};
+    group.forEach(function (seg, idx) {
+      var k1 = pointKey(seg.p1);
+      var k2 = pointKey(seg.p2);
+      pointMap[k1] = seg.p1;
+      pointMap[k2] = seg.p2;
+      if (!adj[k1]) adj[k1] = [];
+      if (!adj[k2]) adj[k2] = [];
+      adj[k1].push({ other: k2, segIdx: idx });
+      adj[k2].push({ other: k1, segIdx: idx });
+    });
+
+    var usedSeg = new Array(group.length);
+    var polylines = [];
+
+    function walkFrom(startKey) {
+      var poly = [pointMap[startKey]];
+      var currentKey = startKey;
+      while (true) {
+        var neighbors = adj[currentKey] || [];
+        var next = null;
+        for (var i = 0; i < neighbors.length; i++) {
+          if (!usedSeg[neighbors[i].segIdx]) {
+            next = neighbors[i];
+            break;
+          }
+        }
+        if (!next) break;
+        usedSeg[next.segIdx] = true;
+        poly.push(pointMap[next.other]);
+        currentKey = next.other;
+      }
+      return poly;
+    }
+
+    // Open chains start at an endpoint (a point with exactly one unused edge).
+    Object.keys(adj).forEach(function (key) {
+      var unusedCount = adj[key].filter(function (n) {
+        return !usedSeg[n.segIdx];
+      }).length;
+      if (unusedCount === 1) {
+        polylines.push(walkFrom(key));
+      }
+    });
+    // Whatever's left is closed loops.
+    for (var i = 0; i < group.length; i++) {
+      if (!usedSeg[i]) {
+        polylines.push(walkFrom(pointKey(group[i].p1)));
+      }
+    }
+
+    return polylines;
+  }
+
+  // Chaikin corner-cutting: repeatedly replace each edge with two points at its
+  // quarter marks, rounding off every kink left by the per-cell tracing. This is
+  // what actually removes the "staircase" look -- blurring the source only
+  // reduces how sharp the underlying elevation changes are, it doesn't stop
+  // marching squares from tracing every small remaining wiggle as hard corners.
+  function chaikinSmooth(points, iterations) {
+    if (points.length < 3) return points;
+    var closed = pointKey(points[0]) === pointKey(points[points.length - 1]);
+    var pts = points;
+    for (var it = 0; it < iterations; it++) {
+      var n = pts.length;
+      var newPts = [];
+      var limit = closed ? n - 1 : n - 1;
+      if (!closed) newPts.push(pts[0]);
+      for (var i = 0; i < limit; i++) {
+        var p0 = pts[i];
+        var p1 = pts[i + 1];
+        newPts.push([0.75 * p0[0] + 0.25 * p1[0], 0.75 * p0[1] + 0.25 * p1[1]]);
+        newPts.push([0.25 * p0[0] + 0.75 * p1[0], 0.25 * p0[1] + 0.75 * p1[1]]);
+      }
+      if (!closed) newPts.push(pts[pts.length - 1]);
+      else newPts.push(newPts[0]);
+      pts = newPts;
+    }
+    return pts;
   }
 
   // Standard 16-case marching squares with linear interpolation along crossed edges.
@@ -451,10 +539,14 @@
     var avgColor = "rgb(" + avgRgb[0] + "," + avgRgb[1] + "," + avgRgb[2] + ")";
 
     ctx.strokeStyle = avgColor;
+    var polylines = buildPolylines(group);
     ctx.beginPath();
-    for (var s = 0; s < group.length; s++) {
-      ctx.moveTo(group[s].p1[0], group[s].p1[1]);
-      ctx.lineTo(group[s].p2[0], group[s].p2[1]);
+    for (var s = 0; s < polylines.length; s++) {
+      var pts = chaikinSmooth(polylines[s], TOPO_SMOOTH_ITERATIONS);
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (var p = 1; p < pts.length; p++) {
+        ctx.lineTo(pts[p][0], pts[p][1]);
+      }
     }
     ctx.stroke();
   }
