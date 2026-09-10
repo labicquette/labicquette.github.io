@@ -118,6 +118,9 @@ collections:
     defaults:
       layout: post
     output: true
+  projects:
+    output: true
+    permalink: /projects/:name/
 
 # -----------------------------------------------------------------------------
 # Jekyll settings
@@ -189,6 +192,11 @@ defaults:
       path: "assets"
     values:
       sitemap: false
+  - scope:
+      path: ""
+      type: projects
+    values:
+      flowers: false
 
 sass:
   style: compressed
