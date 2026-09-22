@@ -1,8 +1,8 @@
 cv:
   name: Théo Charlot
-  label: Research Engineer
+  label: PhD Student
   email: theocyrilcharlot@gmail.com
-  location: Paris, France
+  location: Grenoble, France
   image: ""
   summary: Research interests in human-inspired machine learning, developmentally-plausible machine learning, and human reasoning.
 
@@ -13,7 +13,8 @@ cv:
       username: theo-cyril-charlot
 
   address:
-    city: Paris
+    city: Grenoble
+    region: France # rendered after the city; countryCode alone is never displayed
     countryCode: FR
 
   sections:
@@ -39,6 +40,13 @@ cv:
           - "Reinforcement Learning, Supervised Learning, Data Science, Algorithmics, Web Fullstack, Linux Systems"
 
     Experience:
+      - company: GIPSA-lab & Inria Grenoble
+        position: PhD Student, ComLearn team
+        location: Grenoble, France
+        start_date: 2026-10
+        end_date: present
+        summary: "How do children learn language by looking around and listening to their noisy everyday life? Multimodal and social grounding of language models, supervised by Thomas Hueber, Stéphane Lathuilière and Laurent Girin."
+
       - company: École Normale Supérieure (ENS Ulm)
         position: Research Engineer, CoML & LAAC teams
         location: Paris, France

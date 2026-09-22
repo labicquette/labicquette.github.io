@@ -4,6 +4,7 @@
     <div class="container">
       {% if page.permalink != '/' %}
         <a class="navbar-brand title font-weight-lighter" href="{{ site.baseurl }}/">
+          <img class="navbar-logo" src="{{ '/assets/img/favicon.svg' | relative_url }}" alt="" />
           {% if site.title == 'blank' %}
             {% if site.first_name %}
               <span class="font-weight-bold">
@@ -20,9 +21,15 @@
             {{- site.title -}}
           {% endif %}
         </a>
-      {% elsif site.enable_navbar_social %}
-        <!-- Social Icons -->
-        <div class="navbar-brand social">{% social_links %}</div>
+      {% else %}
+        <!-- Home page: the name is already in the page header, so show the logo alone -->
+        <a class="navbar-brand navbar-logo-only" href="{{ site.baseurl }}/">
+          <img class="navbar-logo" src="{{ '/assets/img/favicon.svg' | relative_url }}" alt="" />
+        </a>
+        {% if site.enable_navbar_social %}
+          <!-- Social Icons -->
+          <div class="navbar-brand social">{% social_links %}</div>
+        {% endif %}
       {% endif %}
       <!-- Navbar Toggle -->
       <button

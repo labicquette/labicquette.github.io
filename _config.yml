@@ -7,8 +7,8 @@ first_name: Théo
 middle_name:
 last_name: Charlot
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Théo Charlot is a Research Engineer at ENS Ulm (CoML & LAAC teams), working on speech representation learning, child-directed speech detection, and human-inspired machine learning.
-keywords: Théo Charlot, speech processing, child-directed speech, NLP, machine learning, self-supervised learning, ENS Ulm, CoML, research # add your own keywords or leave empty
+  Théo Charlot is a PhD student in the ComLearn team (GIPSA-lab & Inria Grenoble), working on how multimodal models can learn language the way children do, from perception and social interaction rather than text.
+keywords: Théo Charlot, language acquisition, multimodal learning, speech processing, child-directed speech, NLP, machine learning, self-supervised learning, ComLearn, GIPSA-lab, Inria Grenoble, research # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: favicon.svg # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 

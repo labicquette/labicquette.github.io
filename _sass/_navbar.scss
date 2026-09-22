@@ -60,6 +60,19 @@
   }
 }
 
+// Flower logo in the navbar, before the site title (and on its own on the
+// home page, where the name already appears in the page header).
+.navbar-logo {
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-right: 0.4rem;
+  vertical-align: -0.3rem;
+}
+
+.navbar-brand.navbar-logo-only .navbar-logo {
+  margin-right: 0;
+}
+
 .navbar.navbar-light {
   a {
     &:hover {
